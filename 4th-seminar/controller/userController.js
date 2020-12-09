@@ -3,6 +3,7 @@ const util = require('../modules/util');
 const responseMessage = require('../modules/responseMessage');
 const statusCode = require('../modules/statusCode');
 const { User } = require('../models');
+const { stat } = require('fs');
 
 module.exports = {
     signup : async (req, res) => {
@@ -87,6 +88,64 @@ module.exports = {
                 console.error(error);
                 return res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMessage.SIGN_UP_FAIL));
             }
+        }
+    },
+    deleteUser: async(req, res) => {
+        const { id } = req.params; //1. parameter로 id값을 받아온다! (id값은 인덱스값)
+
+        try {
+            const user = await User.findOne({ //2. 존재하는 id인지 확인! 없는 id라면 NullValue 반환
+                where: {
+                    id,
+                },
+            });
+
+            if (!User) {
+                return res.status(statusCode.BAD_REQUEST).send(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE);
+            }
+
+            const deleteUsers = await User.destroy({
+                where: {
+                    id,
+                },
+                attributes: ['id', 'email', 'userName'],
+            });
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.DELETE_USER_SUCCESS));
+        } catch (error) {
+            console.error(error);
+            return res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMessage.DELETE_USER_FAIL));
+        }
+    },
+    put: async (req, res) => {
+        const { id } = req.params; //1. parameter로 id값을 받아온다! (id값은 인덱스값)
+        const { email, userName, password } = req.body; //2. req.body에서 데이터 가져오기
+
+        try {
+            const user = await User.findOne({ //3. 존재하는 id인지 확인! 없는 id라면 NullValue 반환
+                where: {
+                    id,
+                },
+                attributes: ['id', 'email', 'userName', 'password'],
+            });
+
+            if (!User) {
+                return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMessage.NULL_VALUE));
+            }
+
+            const salt = crypto.randomBytes(64).toString('base64');
+            const hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('base64');
+            const modifyUser = await User.update({
+                email, password: hashedPassword, userName, salt,
+            }, {
+                where: {
+                    id,
+                },
+            });
+
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.UPDATE_USER_SUCCESS));
+        } catch (error) {
+            console.log(error);
+            return res.status(statusCode.INTERNAL_SERVER_ERROR).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMessage.UPDATE_USER_FAIL));
         }
     },
     readAll : async (req, res) => {
