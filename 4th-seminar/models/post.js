@@ -1,6 +1,3 @@
-const { DataTypes } = require("sequelize/types");
-const { sequelize } = require(".");
-
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('Post', {
         //모델의 Attributes (Column)을 정의하는 곳
