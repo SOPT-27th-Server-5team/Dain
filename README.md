@@ -3,7 +3,7 @@
 - ### SOPT 27기 YB 서버 파트원
 - ### [INSTAGRAM](https://www.instagram.com/chedda_92/)
 - ### ENFP와 ESTP가 공존하는 사람
-- ### 관심과 칭찬을 가장 좋아합니다.
+- ### 관심과 칭찬을 가장 좋아합니다!
 - ### 그런 의미에서 '칭찬할고래' 보러 가볼고래?
 - ### [Notion 소개](https://www.notion.so/8cafb7768caa4b8c9cbf8e2e8d8b3361)
 
@@ -23,3 +23,8 @@
 
 
 <br>
+
+## `Contributor`
+
+- ### [최다인](https://github.com/Chedda98)
+- ### [최정균](https://github.com/wjdrbs96)
